@@ -1,20 +1,25 @@
 import './App.css'
 import { Link, Route, Routes } from 'react-router-dom'
-import Home from './components/Home'
-import About from './components/About'
+// import Home from './components/Home'
+// import About from './components/About'
 import Settings from './components/Settings'
-import { createContext, useState, } from 'react'
+import { useReducer } from 'react'
+import { Reducer } from './utils/reducer'
+// import { createContext, useState, } from 'react'
 
-export const Context = createContext<{
-    hello:string,
-    setHello:React.Dispatch<React.SetStateAction<string>>
-  } | null>(null)
+
+
 function App() {
+  const [state, dispatch] = useReducer(Reducer, {
+    name: 'Azim',
+    age: 22,
+    count: 0
+  })
 
-    const [hello, setHello] = useState('hello')
+
 
   return (
-    <Context.Provider value={{hello, setHello}}>
+    <>
       <div className='flex gap-5 py-5 mt-5 max-w-[1250px] items-center m-auto justify-around bg-[#d97757] rounded-[100px]'>
         <h1 className='text-3xl font-bold cursor-pointer'>Logo</h1>
         <div className='flex gap-5 md:flex hidden'>
@@ -29,12 +34,22 @@ function App() {
         <p className='md:hidden text-3xl cursor-pointer'>☰</p>
       </div>
 
+      <div className='flex gap-5 mt-5 max-w-[1250px] items-center m-auto justify-center '>
+        <h1>{state.name}</h1>
+        <hr className='w-[1px] h-[20px] bg-[#d97757]'/>
+        <h1>{state.age}</h1>
+        <hr className='w-[1px] h-[20px] bg-[#d97757]'/>
+        <h1>{state.count}</h1>
+        <button onClick={()=>dispatch('plus')} className='bg-[#2e2e2c] hover:bg-[#3d3d3b] transition-all duration-300 rounded-[100px] px-5 py-2 cursor-pointer'>plus</button>
+        <button onClick={()=>dispatch('change')} className='bg-[#2e2e2c] hover:bg-[#3d3d3b] transition-all duration-300 rounded-[100px] px-5 py-2 cursor-pointer'>change name</button>
+      </div>
+
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
+        {/* <Route path="/" element={<Home />} /> */}
+        {/* <Route path="/about" element={<About />} /> */}
         <Route path="/settings" element={<Settings />} />
       </Routes>
-    </Context.Provider>
+    </>
   )
 }
 
