@@ -1,25 +1,46 @@
 import './App.css'
 import { Link, Route, Routes } from 'react-router-dom'
-// import Home from './components/Home'
+import Home from './components/Home'
 // import About from './components/About'
 import Settings from './components/Settings'
-import { useReducer } from 'react'
-import { Reducer } from './utils/reducer'
-// import { createContext, useState, } from 'react'
+import { createContext, useReducer, type Dispatch } from 'react'
+import { reducer } from './utils/reducer'
+import About from './components/About'
 
+interface User {
+    name: string,
+    age: string,
+    email: string
+}
 
+interface State {
+    users: User[],
+    user: User,
+    current: string
+}
+
+type Action =
+    | {type: "NAME", payload: string}
+    | {type: "AGE", payload: string}
+    | {type: "EMAIL", payload: string}
+    | {type: "ADD_USER"}
+
+interface contextType {
+    state: State,
+    dispatch: Dispatch<Action>
+}
+
+export const Context = createContext<contextType | null>(null)
 
 function App() {
-  const [state, dispatch] = useReducer(Reducer, {
-    name: 'Azim',
-    age: 22,
-    count: 0
+  const [state, dispatch] = useReducer(reducer, {
+    users:[],
+    user: {name: "", age: '', email: ""},
+    current: ''
   })
 
-
-
   return (
-    <>
+    <Context.Provider value={{state, dispatch}}>
       <div className='flex gap-5 py-5 mt-5 max-w-[1250px] items-center m-auto justify-around bg-[#d97757] rounded-[100px]'>
         <h1 className='text-3xl font-bold cursor-pointer'>Logo</h1>
         <div className='flex gap-5 md:flex hidden'>
@@ -34,22 +55,12 @@ function App() {
         <p className='md:hidden text-3xl cursor-pointer'>☰</p>
       </div>
 
-      <div className='flex gap-5 mt-5 max-w-[1250px] items-center m-auto justify-center '>
-        <h1>{state.name}</h1>
-        <hr className='w-[1px] h-[20px] bg-[#d97757]'/>
-        <h1>{state.age}</h1>
-        <hr className='w-[1px] h-[20px] bg-[#d97757]'/>
-        <h1>{state.count}</h1>
-        <button onClick={()=>dispatch('plus')} className='bg-[#2e2e2c] hover:bg-[#3d3d3b] transition-all duration-300 rounded-[100px] px-5 py-2 cursor-pointer'>plus</button>
-        <button onClick={()=>dispatch('change')} className='bg-[#2e2e2c] hover:bg-[#3d3d3b] transition-all duration-300 rounded-[100px] px-5 py-2 cursor-pointer'>change name</button>
-      </div>
-
       <Routes>
-        {/* <Route path="/" element={<Home />} /> */}
-        {/* <Route path="/about" element={<About />} /> */}
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>
-    </>
+    </Context.Provider>
   )
 }
 
